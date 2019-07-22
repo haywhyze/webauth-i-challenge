@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/haywhyze/webauth-i-challenge#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
     "helmet": "^3.19.0",
     "knex": "^0.19.0",
