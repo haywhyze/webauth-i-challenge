@@ -1,9 +1,10 @@
 /* eslint-disable no-console */
 const express = require('express');
 const helmet = require('helmet');
-const bcrypt = require('bcryptjs');
+// const bcrypt = require('bcryptjs');
 const Users = require('./users/users-model.js');
 const sillyBcrypt = require('./sillyBcrypt');
+const checkCredentialsInBody = require('./checkCredentialsInBody');
 
 const server = express();
 
@@ -30,21 +31,8 @@ server.post('/api/register', (req, res) => {
     });
 });
 
-server.post('/api/login', (req, res) => {
-  const { username, password } = req.body;
-
-  Users.findBy({ username })
-    .first()
-    .then((user) => {
-      if (user && sillyBcrypt.compare(password, user.password)) {
-        res.status(200).json({ message: `Welcome ${user.username}!` });
-      } else {
-        res.status(401).json({ message: 'Invalid Credentials' });
-      }
-    })
-    .catch((error) => {
-      res.status(500).json(error);
-    });
+server.post('/api/login', checkCredentialsInBody, (req, res) => {
+  res.status(200).json({ message: `Welcome ${req.user.username}!` });
 });
 
 const port = process.env.PORT || 5000;
