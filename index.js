@@ -3,6 +3,7 @@ const express = require('express');
 const helmet = require('helmet');
 const bcrypt = require('bcryptjs');
 const Users = require('./users/users-model.js');
+const sillyBcrypt = require('./sillyBcrypt');
 
 const server = express();
 
@@ -15,8 +16,8 @@ server.get('/', (req, res) => {
 
 server.post('/api/register', (req, res) => {
   const user = req.body;
-  user.password = bcrypt.hashSync(user.password, 12);
-
+  // user.password = bcrypt.hashSync(user.password, 12);
+  user.password = sillyBcrypt.hash(user.password, 10);
   Users.add(user)
     .then((saved) => {
       res.status(201).json({
@@ -35,7 +36,7 @@ server.post('/api/login', (req, res) => {
   Users.findBy({ username })
     .first()
     .then((user) => {
-      if (user && bcrypt.compareSync(password, user.password)) {
+      if (user && sillyBcrypt.compare(password, user.password)) {
         res.status(200).json({ message: `Welcome ${user.username}!` });
       } else {
         res.status(401).json({ message: 'Invalid Credentials' });
