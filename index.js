@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const Users = require('./users/users-model.js');
 const sillyBcrypt = require('./sillyBcrypt');
 const checkCredentialsInBody = require('./checkCredentialsInBody');
+const restricted = require('./restricted');
 
 const server = express();
 
@@ -33,6 +34,13 @@ server.post('/api/register', (req, res) => {
 
 server.post('/api/login', checkCredentialsInBody, (req, res) => {
   res.status(200).json({ message: `Welcome ${req.user.username}!` });
+});
+
+server.get('/api/users', restricted, (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(200).json(users);
+    });
 });
 
 const port = process.env.PORT || 5000;
